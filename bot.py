@@ -14,7 +14,7 @@ print('Bot Running...')
 logger = telebot.logger
 telebot.logger.setLevel(logging.DEBUG)
 now = datetime.now()
-TOKEN = '5137335173:AAFfblx5zUswtepTq1P_7dYV8RfgPk5Rxqk'
+TOKEN = AAA #from envi
 bot = telebot.TeleBot(token=TOKEN)
 
 def findat(msg):
