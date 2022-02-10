@@ -1,20 +1,36 @@
+import os
+from os.path import join, dirname
 import sys, signal
 import time
 from datetime import datetime
+from dotenv import load_dotenv
 import telebot
 import logging
+sys.path.insert(0,'./sheet.py')
+import sheet
 
+#Load .env file
+dotenv_path = join(dirname(__file__), '.env')
+load_dotenv(dotenv_path)
+
+#Ctrl+C to end the python session
 def signal_handler(signal, frame):
-    #Ctrl+C to end the python session
     print("\nProgram exiting gracefully\nHave a nice Day! :)")
     sys.exit(0)
 signal.signal(signal.SIGINT, signal_handler)
 
+#Logging file
 print('Bot Running...')
 logger = telebot.logger
 telebot.logger.setLevel(logging.DEBUG)
+
+#Set variable
 now = datetime.now()
-TOKEN = AAA #from envi
+def date_time(str):
+    return now.strftime(str)
+
+#Setup token and bot
+TOKEN = os.environ.get("TG_BOT_TOKEN")
 bot = telebot.TeleBot(token=TOKEN)
 
 def findat(msg):
@@ -27,10 +43,16 @@ def findat(msg):
 def send_welcome(message):
     bot.reply_to(message, 'Booted up!')
 
+@bot.message_handler(commands=['jadwal']) # welcome message handler
+def send_welcome(message):
+    yang_masuk = sheet.hasil
+    skr = datetime.now()
+    request_date = skr.strftime("%m/%d/%Y, %H:%M:%S")
+    bot.reply_to(message, yang_masuk+"\nRequested on "+request_date)
+
 @bot.message_handler(commands=['hello']) # welcome message handler
 def send_welcome(message):
-    date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-    hi_msg = 'Hi There! Generate at '+date_time
+    hi_msg = 'Hi There! Generate at '+date_time("%m/%d/%Y, %H:%M:%S")
     bot.reply_to(message, hi_msg)
 
 @bot.message_handler(commands=['help']) # help message handler
@@ -59,15 +81,3 @@ while True:
         date_time = skr.strftime("%m/%d/%Y, %H:%M:%S")
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nTIMEOUT! DIULANG LAGI DI "+date_time+"\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         time.sleep(21)
-
-# # while True:
-# try:
-#     while True:
-#         bot.polling(none_stop=True)
-#     # ConnectionError and ReadTimeout because of possible timout of the requests library
-#     # maybe there are others, therefore Exception
-# # except Exception:
-# #     time.sleep(15)
-# except KeyboardInterrupt:
-#     print('interrupted!')
-# # signal.signal(signal.SIGINT, signal_handler)
