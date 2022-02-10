@@ -1,7 +1,20 @@
+import sys, signal
 import time
+from datetime import datetime
 import telebot
+import logging
 
-TOKEN = "your bot token here"
+def signal_handler(signal, frame):
+    #Ctrl+C to end the python session
+    print("\nProgram exiting gracefully\nHave a nice Day! :)")
+    sys.exit(0)
+signal.signal(signal.SIGINT, signal_handler)
+
+print('Bot Running...')
+logger = telebot.logger
+telebot.logger.setLevel(logging.DEBUG)
+now = datetime.now()
+TOKEN = '5137335173:AAFfblx5zUswtepTq1P_7dYV8RfgPk5Rxqk'
 bot = telebot.TeleBot(token=TOKEN)
 
 def findat(msg):
@@ -12,11 +25,17 @@ def findat(msg):
 
 @bot.message_handler(commands=['start']) # welcome message handler
 def send_welcome(message):
-    bot.reply_to(message, '(placeholder text)')
+    bot.reply_to(message, 'Booted up!')
+
+@bot.message_handler(commands=['hello']) # welcome message handler
+def send_welcome(message):
+    date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+    hi_msg = 'Hi There! Generate at '+date_time
+    bot.reply_to(message, hi_msg)
 
 @bot.message_handler(commands=['help']) # help message handler
 def send_welcome(message):
-    bot.reply_to(message, 'ALPHA = FEATURES MAY NOT WORK')
+    bot.reply_to(message, 'Still in progress!')
 
 @bot.message_handler(func=lambda msg: msg.text is not None and '@' in msg.text)
 # lambda function finds messages with the '@' sign in them
@@ -36,4 +55,19 @@ while True:
         # ConnectionError and ReadTimeout because of possible timout of the requests library
         # maybe there are others, therefore Exception
     except Exception:
-        time.sleep(15)
+        skr = datetime.now()
+        date_time = skr.strftime("%m/%d/%Y, %H:%M:%S")
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nTIMEOUT! DIULANG LAGI DI "+date_time+"\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        time.sleep(21)
+
+# # while True:
+# try:
+#     while True:
+#         bot.polling(none_stop=True)
+#     # ConnectionError and ReadTimeout because of possible timout of the requests library
+#     # maybe there are others, therefore Exception
+# # except Exception:
+# #     time.sleep(15)
+# except KeyboardInterrupt:
+#     print('interrupted!')
+# # signal.signal(signal.SIGINT, signal_handler)
