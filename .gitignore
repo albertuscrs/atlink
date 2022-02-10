@@ -102,3 +102,7 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# my file
+creds.json
+data.json
